@@ -19,6 +19,8 @@ Route::prefix('/v1')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
 
         // task route 
+        Route::get('/tasks/summary', [TaskController::class, 'summary']);
+        Route::get('/tasks/trashed', [TaskController::class, 'getTrashed']);
         Route::apiResource('/tasks', TaskController::class);
         Route::post('/tasks/{task}/restore', [TaskController::class, 'restore']);
         Route::delete('/tasks/{task}/force-delete', [TaskController::class, 'forceDelete']);

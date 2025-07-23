@@ -38,13 +38,7 @@ class TaskController extends BaseApiController
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+
 
     /**
      * Store a neRwly created resource in storage.
@@ -82,10 +76,7 @@ class TaskController extends BaseApiController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.
@@ -173,6 +164,41 @@ class TaskController extends BaseApiController
             return $this->success(new TaskResource($task), 'Task status updated successfully', 200);
         } catch (\Throwable $err) {
             return $this->error('There is something wrong', 500, $err);
+        }
+    }
+    public function getTrashed(Request $request)
+    {
+        try {
+
+            $tasks = Auth::user()->tasks()->onlyTrashed()->latest()->paginate(10);
+
+            return $this->success(new TaskCollection($tasks), 'Task fetch successfully', 200);
+        } catch (\Throwable $err) {
+            return $this->error('There is something wrong', 500, $err);
+        }
+    }
+
+    public function summary(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $summary = $user->tasks()
+                ->selectRaw('status, COUNT(*) as count')
+                ->groupBy('status')
+                ->pluck('count', 'status');
+
+            // Ensure all statuses are present, even if 0
+            $allStatuses = ['new', 'in_progress', 'completed', 'cancel'];
+            $finalSummary = [];
+
+            foreach ($allStatuses as $status) {
+                $finalSummary[$status] = $summary[$status] ?? 0;
+            }
+
+            return $this->success($finalSummary, 'Task summary fetched successfully');
+        } catch (\Throwable $e) {
+            return $this->error('Failed to load task summary', 500, $e);
         }
     }
 }

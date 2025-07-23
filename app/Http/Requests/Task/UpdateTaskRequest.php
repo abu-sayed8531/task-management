@@ -25,7 +25,7 @@ class UpdateTaskRequest extends FormRequest
         return [
             'title' => 'required|string|min:3',
             'description' => 'nullable|string',
-            'status' => 'sometimes|required|in:new,in_progress,completed,canceled',
+            'status' => 'sometimes|required|in:new,in_progress,completed,cancel',
         ];
     }
 }

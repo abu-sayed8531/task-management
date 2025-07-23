@@ -9,6 +9,7 @@ use App\Http\Resources\User\UserResource;
 use App\Models\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
@@ -50,7 +51,7 @@ class AuthController extends BaseApiController
     }
     public function me(Request $request)
     {
-        $user  = $request->user();
+        $user  = Auth::user();
         $key = "user_profile_{$user->id}";
         $cached = Cache::remember($key, now()->addHour(), function () use ($user) {
             return new UserResource($user);

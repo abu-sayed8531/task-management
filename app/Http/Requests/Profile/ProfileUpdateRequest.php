@@ -24,7 +24,7 @@ class ProfileUpdateRequest extends FormRequest
         return [
             'name' => 'required|string|min:3',
             'email' => 'required|string|max:100|email:filter',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'sometimes|required|string|min:8|confirmed',
         ];
     }
 }
